@@ -1,5 +1,5 @@
 /* variables */
-const BET_AMOUNT =  10000000000000000; /* 0,01 ether, around $6 */
+const BET_AMOUNT =  1000000000000000000; /* 0,01 ether, around $6 */
 const GAS = 700000;
 const GAS_PRICE = 2000000000;
 const bets = [];
@@ -22,61 +22,148 @@ function showWarning(msg) {
 }
 
 function init() {
-  return initWeb3();
+  // return initWeb3();
 }
 
-function initWeb3() {
+// window.addEventListener('load', async () => {
+//     // Modern dapp browsers...
+//     ethereum.request();
+//     console.log("sd");
+//     if (window.ethereum) {
+//       console.log("dsd");
+//         window.web3 = new Web3(ethereum);
+//         try {
+//             await ethereum.enable();
+//             var accounts= await web3.eth.getAccounts();
+//             var option={from: accounts[0] };
+//             var myContract = new web3.eth.Contract(abi,contractAddress);
+//             myContract.methods.RegisterInstructor('11','Ali')
+//             .send(option,function(error,result){
+//                 if (! error)
+//                     console.log(result);
+//                 else
+//                     console.log(error);
+//             });
+//         } catch (error) {
+//           console.log(error);
+//             // User denied account access...
+//         }
+//     }
+//     // Legacy dapp browsers...
+//     else if (window.web3) {
+//       console.log("sad");
+//         window.web3 = new Web3(web3.currentProvider);
+//         // Acccounts always exposed
+//         // web3.eth.sendTransaction({/* ... */});
+//     }
+//     // Non-dapp browsers...
+//     else {
+//         console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+//     }
+// });
+
+function connect () {
+  if (typeof ethereum !== 'undefined') {
+    return ethereum.enable()
+    .catch(console.error)
+  }
+}
+
+function connectWeb3() {
+
+
+initWeb3();
+
+  // connect();
+  // // showWarning("Bad");
+
+  // if (typeof window.ethereum !== 'undefined') {
+  //   console.log('MetaMask is installed!');
+  //   return;
+  // }
+
+  // if(typeof window.ethereum === 'undefined') {
+  //     showWarning('Metamask not installed');
+  //     return;
+  //   }
+
+  //   if(window.ethereum.chainId === '0x309') {
+  //     showWarning('Already on the chain');
+  //     return;
+  //   }
+}
+
+async function initWeb3() {
+
+  console.log("init web3");
+
   // Is there an injected web3 instance?
   if (typeof web3 !== 'undefined') {
-    web3Provider = web3.currentProvider;
+    console.log("Meta detected");
+    web3Provider = window.ethereum;
+    ethereum.enable();
+
+    // web3.eth.defaultAccount = web3.eth.accounts[0];
+
   } else {
+    showWarning('You need <a href="https://metamask.io/">Metamask</a> installed and connected to the cheapEth network');
     // If no injected web3 instance is detected, fall back to Ganache
-    web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+    // web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+    // return
   }
+  const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+  const account = accounts[0];
+
   web3 = new Web3(web3Provider);
-  if (web3.isConnected()) return initContract();
+
+  // var balance = web3.eth.getBalance(account);
+
+  web3.eth.getBalance(account, function (error, result) {
+        if (!error) {
+          console.log(account + ': ' + result);
+        };
+      });
+
+  web3.eth.defaultAccount = account;
+
+  var connected = await web3.eth.net.isListening();
+  
+  if (connected) return initContract();
   showWarning('You need <a href="https://metamask.io/">Metamask</a> installed and connected to the ropsten network');
 }
 
-function initContract() {
+async function initContract() {
+  var networkID = await web3.eth.net.getId(); 
   // get abi and deployed address
   $.getJSON('Roulette.json', (data) => {
-    web3.version.getNetwork((err, netId) => {
-      let address;
-      switch (netId) {
-        case "1": // main network
-          showWarning("You're on the Ethereum main network. Please switch to Ropsten.");
-          break
-        case "2": // morden
-          showWarning("You're on the Morden test network. Please switch to Ropsten.");
-          break
-        case "3": // ropsten
-          address = '0xba3bb2eb6ec54fc62bef844f8bad8044724d801b';
-          break
-        case "4": // rinkeby
-          showWarning("You're on the Rinkeby test network. Please switch to Ropsten.");
-          break
-        case "42": // kovan
-          showWarning("You're on the Kovan test network. Please switch to Ropsten.");
-          break
-        default: // unknown network, should be ganache
-          console.log('This is an unknown network.');
-          address = data.networks[netId].address;
-      }
-      const abi = data.abi;
-      contract = web3.eth.contract(abi).at(address);
+
+    
+
+    if (networkID == 777) {
+      showWarning("Connected to cheapEth network");
+      address = '0x25D6870242D141629b8ee1d5d757920Fd31Cb913';
+    } else {
+      showWarning("Connected to cheapEth network");
+      return;
+    }
+
+    const abi = data.abi;
+
+      contract = new web3.eth.Contract(abi, address);
+
       updateUI();
       return initEventListeners();
     })
-  });
 }
 
 function initEventListeners() {
   /* listening for events from the smart contract */
-  const event = contract.RandomNumber({}, (err, res) => {
+  const event = contract.events.RandomNumber({}, (err, res) => {
+
     if (res.blockNumber > lastBlockEvent) {               /* prevent duplicated events */
       /* 'random' number generated by the smart contract */
-      const oneRandomNumber = res.args.number.toNumber();
+      // const oneRandomNumber = res.args.number.toNumber();
+      const oneRandomNumber = Number(res.returnValues.number);
       /* increment spin counter */
       wheelSpinCounter += 1;
       /* get wheel element */
@@ -129,7 +216,7 @@ function cleanBets() {
   hideBets();
 }
 
-function placeBet() {
+async function placeBet() {
   let area = this.id;
   let bet = {};
   if (/^c\_\d/.test(area)) bet = {type: 0, value: parseInt(area.substr(2))};
@@ -139,8 +226,8 @@ function placeBet() {
   if (/^m\_\d/.test(area)) bet = {type: 4, value: parseInt(area.substr(2))};
   if (/^n\d\d/.test(area)) bet = {type: 5, value: parseInt(area.substr(1))};
   if (bet.hasOwnProperty('type') && bet.hasOwnProperty('value')) {
-    const options = {value:BET_AMOUNT, gas:GAS, gasPrice:GAS_PRICE};
-    contract.bet(bet.value, bet.type, options, (err, res) => {
+    const options = {from: web3.eth.defaultAccount, value:BET_AMOUNT, gas:GAS, gasPrice:GAS_PRICE};
+    contract.methods.bet(bet.value, bet.type).send(options, (err, res) => {
       if (err) return void showError('not enough money in the bank', err);
       pushBet(bet);
     });
@@ -232,14 +319,20 @@ function showBetsStatus(num) {
 }
 
 function spinWheel() {
-  contract.spinWheel({value:0, gas:GAS, gasPrice:GAS_PRICE}, (err, res) => {
+
+  contract.methods.spinWheel().send({from: web3.eth.defaultAccount, value:0, gas:GAS, gasPrice:GAS_PRICE}, (function (err, res)  {
     if (err) return void showError('to soon to play?', err);
     firstBetAfterSpin = true;
-  });
+  }));
+
+  // contract.methods.spinWheel({value:0, gas:GAS, gasPrice:GAS_PRICE}, (err, res) => {
+  //   if (err) return void showError('to soon to play?', err);
+  //   firstBetAfterSpin = true;
+  // });
 }
 
 function cashOut() {
-  contract.cashOut({value:0, gas:GAS, gasPrice:GAS_PRICE}, (err, res) => {
+  contract.methods.cashOut().send({from: web3.eth.defaultAccount, value:0, gas:GAS, gasPrice:GAS_PRICE}, (err, res) => {
     if (err) return void showError('something went wrong with cashOut', err);
   });
 }
@@ -255,9 +348,20 @@ function updateHTML(value, elId) {
 
 /* call smart contract to get status and update UI */
 function getStatus() {
-  contract.getStatus((err, res) => {
+
+    // web3.eth.getBalance(account, function (error, result) {
+    //     if (!error) {
+    //       console.log(account + ': ' + result);
+    //     };
+    //   });
+
+
+  contract.methods.getStatus().call(function (err, res)  {
+
     if (err) return void showError('something went wrong with getStatus', err);
-    let aux = res.map(x => x.toNumber());
+
+    let aux = res;
+    // let aux = res.map(x => x.toNumber());
     updateHTML(aux[0],'betsCount');                             // bets count
     aux[1] = toEther(aux[1]);                                   // bets value
     updateHTML(aux[1],'betsValue');
@@ -268,15 +372,18 @@ function getStatus() {
     updateHTML(aux[3],'balance');
     aux[4] = toEther(aux[4]);                                   // winnings
     updateHTML(aux[4],'winnings');
-    web3.eth.getBalance(web3.eth.coinbase, (err, balance) => {  // player balance
+    web3.eth.getBalance(web3.eth.defaultAccount, (err, balance) => {  // player balance
       balance = toEther(balance);
       updateHTML(balance, 'yourBalance');
     });
+
   });
 }
 
 /* every second query smart contract for status */
 function updateUI() {
+  getStatus();
+
   setInterval(function () {
     getStatus();
   }, 1000);

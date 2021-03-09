@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon">
     <link rel="icon" href="/images/logo.png" type="image/x-icon">
-    <title>Ethereum Roulette</title>
+    <title>cheapEth Roulette</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
   </head>
@@ -15,15 +15,17 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2 text-center">
-          <h1>Ethereum Roulette</h1>
-          <p>A casino roulette PoC deployed on the ethereum ropsten test network</p>
+          <button onclick="connectWeb3()">Connect Metamask</button>
+          <!-- <button id="addNow">Click to add</button> -->
+          <h1>cheapEth Roulette</h1>
+          <p>Roulette deployed on the cheapEth network</p>
           <p>
             <a href="https://github.com/bordalix/ethereum-roulette.git">
-              github
+              forked from github
             </a>
             &nbsp; &middot; &nbsp;
-            <a href="https://ropsten.etherscan.io/address/0xba3bb2eb6ec54fc62bef844f8bad8044724d801b">
-              etherscan
+            <a href="https://explore.cheapswap.io/account/0x25d6870242d141629b8ee1d5d757920fd31cb913">
+              block explorer
             </a>
           </p>
           <hr/>
@@ -51,6 +53,7 @@
       </div>
       <div class="col-xs-12 col-sm-12 col-md-6">
         <p>Click on the board to make your bet:<p>
+        <p><strong>1 bet = 1 cth</strong></p>
         <img id="layout" src="images/layout.png" usemap="#mapname" />
         <map id="rouletteTable" name="mapname">
           <area id="n00" shape="rect" coords="  7, 13, 40,149"> <!-- numbers (37) -->
@@ -109,11 +112,11 @@
       <div style="clear:both"></div>
     </div>
 
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>
+
   </body>
 </html>
