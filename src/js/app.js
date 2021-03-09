@@ -25,72 +25,9 @@ function init() {
   // return initWeb3();
 }
 
-// window.addEventListener('load', async () => {
-//     // Modern dapp browsers...
-//     ethereum.request();
-//     console.log("sd");
-//     if (window.ethereum) {
-//       console.log("dsd");
-//         window.web3 = new Web3(ethereum);
-//         try {
-//             await ethereum.enable();
-//             var accounts= await web3.eth.getAccounts();
-//             var option={from: accounts[0] };
-//             var myContract = new web3.eth.Contract(abi,contractAddress);
-//             myContract.methods.RegisterInstructor('11','Ali')
-//             .send(option,function(error,result){
-//                 if (! error)
-//                     console.log(result);
-//                 else
-//                     console.log(error);
-//             });
-//         } catch (error) {
-//           console.log(error);
-//             // User denied account access...
-//         }
-//     }
-//     // Legacy dapp browsers...
-//     else if (window.web3) {
-//       console.log("sad");
-//         window.web3 = new Web3(web3.currentProvider);
-//         // Acccounts always exposed
-//         // web3.eth.sendTransaction({/* ... */});
-//     }
-//     // Non-dapp browsers...
-//     else {
-//         console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
-//     }
-// });
-
-function connect () {
-  if (typeof ethereum !== 'undefined') {
-    return ethereum.enable()
-    .catch(console.error)
-  }
-}
 
 function connectWeb3() {
-
-
 initWeb3();
-
-  // connect();
-  // // showWarning("Bad");
-
-  // if (typeof window.ethereum !== 'undefined') {
-  //   console.log('MetaMask is installed!');
-  //   return;
-  // }
-
-  // if(typeof window.ethereum === 'undefined') {
-  //     showWarning('Metamask not installed');
-  //     return;
-  //   }
-
-  //   if(window.ethereum.chainId === '0x309') {
-  //     showWarning('Already on the chain');
-  //     return;
-  //   }
 }
 
 async function initWeb3() {
@@ -98,7 +35,7 @@ async function initWeb3() {
   console.log("init web3");
 
   // Is there an injected web3 instance?
-  if (typeof web3 !== 'undefined') {
+  if (window.ethereum) {
     console.log("Meta detected");
     web3Provider = window.ethereum;
     ethereum.enable();
