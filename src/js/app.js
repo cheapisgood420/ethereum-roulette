@@ -49,7 +49,7 @@ function updateHistory(new_number) {
     
     if(history[i] == 0) {
       p.innerHTML += "<span class=\"greenText\">"+history[i]+"</span>&nbsp;"
-    } else if (history[i] %2 == 0) {
+    } else if ([2, 4, 6, 8, 10, 11, 13, 15, 17, 19, 20, 22, 24, 26, 29, 31, 33, 35].includes(history[i])) {
       p.innerHTML += "<span class=\"blackText\">"+history[i]+"</span>&nbsp;"
     } else {
       p.innerHTML += "<span class=\"redText\">"+history[i]+"</span>&nbsp;"
@@ -76,7 +76,7 @@ async function initWeb3() {
   if (window.ethereum) {
     console.log("Meta detected");
     web3Provider = window.ethereum;
-    ethereum.enable();
+    // ethereum.enable();
 
     // web3.eth.defaultAccount = web3.eth.accounts[0];
 
