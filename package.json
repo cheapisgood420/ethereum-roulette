@@ -1,23 +1,28 @@
 {
-  "name": "pet-shop",
+  "name": "cheap-roulette",
   "version": "1.0.0",
   "description": "",
+  "homepage": "https://cheapisgood420.github.io/ethereum-roulette/",
   "main": "truffle.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "build": "react-scripts build",
     "dev": "lite-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "gh-pages": "^3.1.0",
     "lite-server": "^2.3.0"
   },
   "dependencies": {
     "http-server": "^0.12.3",
     "lodash": ">=4.17.19",
-    "web3": "^1.3.4"
+    "web3": "^1.3.4",
+    "react-scripts": ">=4.0.3"
   }
 }
