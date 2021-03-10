@@ -117,7 +117,9 @@ async function initContract() {
     if (networkID == 777) {
       showWarning("Connected to cheapEth network");
       // address = '0x25D6870242D141629b8ee1d5d757920Fd31Cb913';
-      address = '0xED211f26Cc2449B6D01cF06C32E24aCC49B38C7C';
+      // address = '0xED211f26Cc2449B6D01cF06C32E24aCC49B38C7C';
+      address = '0x3DEDdb186d7D9ae73Da379E18A7de4Af55802b32';
+      
     } else {
       showWarning("Switch to cheapEth network in Metamask");
       return;
@@ -354,10 +356,8 @@ function getStatus() {
       updateHTML(balance, 'yourBalance');
     });
 
-    if(aux[0] > 0 && aux[2] <= 0) {
+    if(aux[2] <= 0) {
       updateHTML('NO MORE BETS. Spin requested','userHelp');
-    } else if (aux[2] <= 0) {
-      updateHTML('Make one bet for spin','userHelp');
     }
     // userHelp
 
