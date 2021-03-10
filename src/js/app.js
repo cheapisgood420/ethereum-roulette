@@ -49,7 +49,7 @@ function updateHistory(new_number) {
     
     if(history[i] == 0) {
       p.innerHTML += "<span class=\"greenText\">"+history[i]+"</span>&nbsp;"
-    } else if ([2, 4, 6, 8, 10, 11, 13, 15, 17, 19, 20, 22, 24, 26, 29, 31, 33, 35].includes(history[i])) {
+    } else if ([2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35].includes(history[i])) {
       p.innerHTML += "<span class=\"blackText\">"+history[i]+"</span>&nbsp;"
     } else {
       p.innerHTML += "<span class=\"redText\">"+history[i]+"</span>&nbsp;"
@@ -172,7 +172,7 @@ function initEventListeners() {
       firstBetAfterSpin = true;
       lastBlockEvent = res.blockNumber;
       updateHistory(oneRandomNumber);
-      updateHTML('Make bets!','userHelp');
+      
     }
   });
 }
@@ -358,6 +358,8 @@ function getStatus() {
 
     if(aux[2] <= 0) {
       updateHTML('NO MORE BETS. Spin requested','userHelp');
+    } else {
+      updateHTML('Make bets!','userHelp');
     }
     // userHelp
 
