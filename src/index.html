@@ -1,5 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+  <style>
+      .redText
+      {
+          color:red;
+          font-weight:bold;
+      }
+      .blackText
+      {
+          color:black;
+          font-weight:bold;
+      }
+      .greenText
+      {
+          color:green;
+          font-weight:bold;
+      }
+  </style>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -44,6 +61,7 @@
         <p>Bets counter: <span id="betsCount"></span></p>
         <p>Bets value: <span id="betsValue"></span></p>
         <p>Time until next spin: <span id="timeUntilNextSpin"></span></p>
+        <p><span id="userHelp"></span></p>
         <p><strong>NOTES</strong></p>
         <p>Duplicate bets are allowed</p>
         <p>Wheel should auto-spin, wait +-30s after timer hits zero</p>
@@ -59,6 +77,9 @@
       <div class="col-xs-12 col-sm-12 col-md-6">
         <p>Click on the board to make your bet:<p>
         <p><strong>1 bet = 0.5 cth</strong></p>
+
+        <div id="history"></div>
+
         <img id="layout" src="images/layout.png" usemap="#mapname" />
         <map id="rouletteTable" name="mapname">
           <area id="n00" shape="rect" coords="  7, 13, 40,149"> <!-- numbers (37) -->
@@ -114,8 +135,12 @@
         <p><strong>Your bets:</strong></p>
         <div id="betsList"></div>
       </div>
+
+
       <div style="clear:both"></div>
     </div>
+
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>

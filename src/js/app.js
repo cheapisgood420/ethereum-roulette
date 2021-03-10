@@ -3,6 +3,7 @@ const BET_AMOUNT =  500000000000000000; /* 0,01 ether, around $6 */
 const GAS = 700000;
 const GAS_PRICE = 2000000000;
 const bets = [];
+const history = [];
 let contract;
 let lastPosition = 0;
 let wheelSpinCounter = 0;
@@ -22,7 +23,44 @@ function showWarning(msg) {
 }
 
 function init() {
+  const div = document.getElementById('history');
+  div.append("History: ");
+
   // return initWeb3();
+}
+
+function updateHistory(new_number) {
+
+  if(history.length > 15) {
+    history.shift();
+  }
+  history.push(new_number);
+
+  const div = document.getElementById('history');
+  while (div.firstChild) {
+    div.removeChild(div.firstChild);
+  }
+
+  const p = document.createElement('p');
+
+  // p.innerHTML = "";
+  p.innerHTML += "History: "
+  for (var i = history.length - 1; i >= 0; i--) {
+    
+    if(history[i] == 0) {
+      p.innerHTML += "<span class=\"greenText\">"+history[i]+"</span>&nbsp;"
+    } else if (history[i] %2 == 0) {
+      p.innerHTML += "<span class=\"blackText\">"+history[i]+"</span>&nbsp;"
+    } else {
+      p.innerHTML += "<span class=\"redText\">"+history[i]+"</span>&nbsp;"
+    }
+
+    if(i != 0) {
+      p.innerHTML += ", ";
+    }
+
+  }
+  div.appendChild(p);   
 }
 
 
@@ -131,6 +169,8 @@ function initEventListeners() {
       }, 2000);
       firstBetAfterSpin = true;
       lastBlockEvent = res.blockNumber;
+      updateHistory(oneRandomNumber);
+      updateHTML('Make bets!','userHelp');
     }
   });
 }
@@ -313,6 +353,13 @@ function getStatus() {
       balance = toEther(balance);
       updateHTML(balance, 'yourBalance');
     });
+
+    if(aux[0] > 0 && aux[2] <= 0) {
+      updateHTML('NO MORE BETS. Spin requested','userHelp');
+    } else if (aux[2] <= 0) {
+      updateHTML('Make one bet for spin','userHelp');
+    }
+    // userHelp
 
   });
 }
