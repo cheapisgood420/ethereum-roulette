@@ -2,7 +2,7 @@
   "name": "cheap-roulette",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://cheapisgood420.github.io/ethereum-roulette/",
+  "homepage": "http://roulette.cheapp.org/",
   "main": "truffle.js",
   "directories": {
     "test": "test"
